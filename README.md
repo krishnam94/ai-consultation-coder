@@ -4,7 +4,7 @@ An AI-powered tool for automatically coding consultation responses using Claude 
 
 ## 🔗 Demo
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-demo-link.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-consultation-coder.streamlit.app/)
 
 Try out the live demo to see the AI Consultation Coder in action!
 
@@ -15,7 +15,6 @@ Try out the live demo to see the AI Consultation Coder in action!
 - **Mobile Responsive**: Works seamlessly on both desktop and mobile devices
 - **Interactive Code Reference**: Searchable codeframe in the sidebar
 - **Detailed Analysis**: Includes confidence scores, explanations, and relevant quotes
-- **Session Management**: Maintains state between responses and resets when needed
 
 ## 🚀 Setup
 
