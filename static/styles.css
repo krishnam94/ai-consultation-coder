@@ -81,12 +81,45 @@
     margin-bottom: 0.5rem;
 }
 
+/* Code reference styling */
 .code-reference {
-    margin-bottom: 0.5rem;
+    background-color: #f0f7f4;
+    border: 1px solid #c8e6c9;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    font-family: 'Courier New', monospace;
+    color: #2d3436;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.code-reference:hover {
+    background-color: #e8f5e9;
+    border-color: #81c784;
 }
 
 .code-reference strong {
-    color: #00FF00;
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+/* Dark mode support for code reference */
+@media (prefers-color-scheme: dark) {
+    .code-reference {
+        background-color: #1b4332;
+        border-color: #2d6a4f;
+        color: #d8f3dc;
+    }
+    
+    .code-reference:hover {
+        background-color: #2d6a4f;
+        border-color: #40916c;
+    }
+    
+    .code-reference strong {
+        color: #95d5b2;
+    }
 }
 
 .footer {

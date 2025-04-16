@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import json
+import time
+from datetime import datetime
 from dotenv import load_dotenv
 from llm.claude_coder import ClaudeCoder
 from utils.parser import clean_response, split_compound_response
@@ -13,17 +15,46 @@ if 'current_question' not in st.session_state:
     st.session_state.current_question = ""
 if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results = None
+if 'last_request_time' not in st.session_state:
+    st.session_state.last_request_time = 0
+if 'request_count' not in st.session_state:
+    st.session_state.request_count = 0
+if 'total_cost' not in st.session_state:
+    st.session_state.total_cost = 0.0
+if 'last_cost' not in st.session_state:
+    st.session_state.last_cost = 0.0
+
+# Constants for rate limiting and cost tracking
+RATE_LIMIT_SECONDS = 5  # Minimum time between requests
+COST_PER_1K_TOKENS = 0.015  # Claude 3 Opus input cost per 1K tokens
+ESTIMATED_OUTPUT_TOKENS = 200  # Estimated output tokens per response
+
+# Estimate token count and cost
+def estimate_cost(text):
+    # Rough estimation: 1 token ≈ 4 characters
+    input_tokens = len(text) / 4
+    total_tokens = input_tokens + ESTIMATED_OUTPUT_TOKENS
+    cost = (total_tokens / 1000) * COST_PER_1K_TOKENS
+    return round(cost, 4)  # Round to 4 decimal places
 
 try:
-    # Get API key from Streamlit secrets or .env file
-    api_key = st.secrets.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise ValueError("ANTHROPIC_API_KEY not found in environment variables or Streamlit secrets")
+    # Get API key from environment variables or Streamlit secrets
+    api_key = None
     
-    # Get other settings from Streamlit secrets or .env file
-    model_name = st.secrets.get("MODEL_NAME") or os.getenv("MODEL_NAME", "claude-3-opus-20240229")
-    max_tokens = int(st.secrets.get("MAX_TOKENS") or os.getenv("MAX_TOKENS", 4000))
-    temperature = float(st.secrets.get("TEMPERATURE") or os.getenv("TEMPERATURE", 0.7))
+    # Try Streamlit secrets first
+    try:
+        api_key = st.secrets["ANTHROPIC_API_KEY"]
+    except (FileNotFoundError, KeyError):
+        # Fall back to environment variables
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+    
+    if not api_key:
+        raise ValueError("ANTHROPIC_API_KEY not found. Please set it in your .env file or Streamlit secrets.")
+    
+    # Get other settings with fallbacks
+    model_name = st.secrets.get("MODEL_NAME", os.getenv("MODEL_NAME", "claude-3-opus-20240229"))
+    max_tokens = int(st.secrets.get("MAX_TOKENS", os.getenv("MAX_TOKENS", 4000)))
+    temperature = float(st.secrets.get("TEMPERATURE", os.getenv("TEMPERATURE", 0.7)))
     
     # Initialize Claude Coder
     coder = ClaudeCoder(
@@ -34,6 +65,12 @@ try:
     )
 except Exception as e:
     st.error(f"Failed to initialize the coding system: {str(e)}")
+    st.info("Please ensure you have set up your API key in either:")
+    st.markdown("""
+    1. `.env` file for local development
+    2. `.streamlit/secrets.toml` for local Streamlit
+    3. Streamlit Cloud secrets for deployment
+    """)
     st.stop()
 
 # Load codeframe
@@ -103,6 +140,21 @@ with st.sidebar:
                             <strong>{code}</strong>: {description}
                         </div>
                     """, unsafe_allow_html=True)
+    
+    # Display usage statistics
+    st.markdown("---")
+    st.markdown("### Usage Statistics")
+    
+    # Create columns for better layout
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.metric("Total Requests", st.session_state.request_count)
+    with col2:
+        st.metric("Total Cost", f"${st.session_state.total_cost:.4f}")
+    
+    if st.session_state.last_cost > 0:
+        st.info(f"Last request cost: ${st.session_state.last_cost:.4f}")
 
 # Main content with responsive tabs
 tab1, tab2 = st.tabs(["Single Response", "Batch Processing"])
@@ -138,27 +190,46 @@ with tab1:
         if not question or not response:
             st.warning("Please enter both a question and response!")
         else:
-            with st.spinner("Analyzing response..."):
-                try:
-                    # Clean and process response
-                    cleaned_response = clean_response(response)
-                    statements = split_compound_response(cleaned_response)
-                    
-                    # Get coding from Claude
-                    coding = coder.code_response(
-                        response=cleaned_response,
-                        question=question
-                    )
-                    
-                    # Store results in session state
-                    st.session_state.analysis_results = {
-                        "cleaned_response": cleaned_response,
-                        "statements": statements,
-                        "coding": coding
-                    }
-                    
-                except Exception as e:
-                    st.error(f"An error occurred during analysis: {str(e)}")
+            # Check rate limiting
+            current_time = time.time()
+            time_since_last_request = current_time - st.session_state.last_request_time
+            
+            if time_since_last_request < RATE_LIMIT_SECONDS:
+                st.warning(f"Please wait {RATE_LIMIT_SECONDS - int(time_since_last_request)} seconds before making another request.")
+            else:
+                with st.spinner("Analyzing response..."):
+                    try:
+                        # Estimate cost
+                        estimated_cost = estimate_cost(question + response)
+                        st.session_state.last_cost = estimated_cost
+                        
+                        # Clean and process response
+                        cleaned_response = clean_response(response)
+                        statements = split_compound_response(cleaned_response)
+                        
+                        # Get coding from Claude
+                        coding = coder.code_response(
+                            response=cleaned_response,
+                            question=question
+                        )
+                        
+                        # Update statistics
+                        st.session_state.last_request_time = current_time
+                        st.session_state.request_count += 1
+                        st.session_state.total_cost += estimated_cost
+                        
+                        # Store results in session state
+                        st.session_state.analysis_results = {
+                            "cleaned_response": cleaned_response,
+                            "statements": statements,
+                            "coding": coding
+                        }
+                        
+                        # Force UI update
+                        st.rerun()
+                        
+                    except Exception as e:
+                        st.error(f"An error occurred during analysis: {str(e)}")
     
     # Display results if available
     if st.session_state.analysis_results:
