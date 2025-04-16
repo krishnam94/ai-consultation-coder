@@ -1,0 +1,115 @@
+{
+    "python": {
+        "patterns": {
+            "class": {
+                "template": "class {name}:\n    def __init__(self, {params}):\n        {init_body}\n\n    def {method_name}(self, {method_params}):\n        {method_body}",
+                "best_practices": [
+                    "Use descriptive class names in CamelCase",
+                    "Initialize all instance variables in __init__",
+                    "Document class and methods with docstrings",
+                    "Use type hints for better code clarity"
+                ]
+            },
+            "function": {
+                "template": "def {name}({params}) -> {return_type}:\n    {body}",
+                "best_practices": [
+                    "Use descriptive function names in snake_case",
+                    "Keep functions small and focused",
+                    "Use type hints for parameters and return values",
+                    "Document functions with docstrings"
+                ]
+            }
+        },
+        "common_issues": [
+            "Mutable default arguments",
+            "Global variable usage",
+            "Inconsistent error handling",
+            "Missing type hints",
+            "Poor exception handling"
+        ]
+    },
+    "javascript": {
+        "patterns": {
+            "class": {
+                "template": "class {name} {{\n    constructor({params}) {{\n        {init_body}\n    }}\n\n    {method_name}({method_params}) {{\n        {method_body}\n    }}\n}}",
+                "best_practices": [
+                    "Use descriptive class names in PascalCase",
+                    "Initialize all instance variables in constructor",
+                    "Use arrow functions for class methods",
+                    "Document class and methods with JSDoc"
+                ]
+            },
+            "function": {
+                "template": "const {name} = ({params}) => {{\n    {body}\n}}",
+                "best_practices": [
+                    "Use descriptive function names in camelCase",
+                    "Use arrow functions for consistency",
+                    "Document functions with JSDoc",
+                    "Handle async/await properly"
+                ]
+            }
+        },
+        "common_issues": [
+            "Callback hell",
+            "Inconsistent error handling",
+            "Missing type checking",
+            "Poor async/await usage",
+            "Memory leaks"
+        ]
+    },
+    "categories": {
+        "supportive_comments": {
+            "001": "Support the proposals (nothing else said)",
+            "002": "Support prioritising buses over private cars",
+            "003": "Support providing bus lanes",
+            "004": "Fewer delays to buses / more reliable / on-time",
+            "005": "Quicker journey times / less time stuck in traffic",
+            "006": "Beneficial in towns / larger settlements"
+        },
+        "wider_positive_impacts": {
+            "050": "Would encourage greater bus use / reduced car use",
+            "051": "Improved air quality / better for the environment",
+            "052": "Improved connectivity / more opportunity to travel",
+            "053": "Improved access to services (medical, leisure, shopping)",
+            "054": "Improved access to jobs and education",
+            "055": "Good for local economy",
+            "056": "Good for elderly passengers",
+            "057": "Good for passengers with mobility issues",
+            "058": "Fewer delays to other traffic / better general traffic flow",
+            "059": "Proposals will improve safety"
+        },
+        "unsupportive_comments": {
+            "100": "Oppose the proposals (nothing else said)",
+            "101": "Poor use of funds / will have no impact",
+            "102": "No benefit to respondent / don't use buses",
+            "103": "Not needed (enough bus priority already)",
+            "104": "Wont work in rural areas",
+            "105": "Not enough roadspace / roads not wide enough",
+            "106": "Bus lanes will cause congestion / make traffic worse",
+            "107": "Bus lanes will be confusing for drivers",
+            "108": "Proposals will be less safe / negative impact on safety",
+            "109": "Construction work will cause congestion / diversions / road closures",
+            "110": "Construction work will be a nuisance for local people"
+        },
+        "suggestions": {
+            "200": "Suggest service to (capture any specifics in details sheet)",
+            "201": "Cheaper bus fares needed",
+            "202": "Retain National Bus Fare cap (the £2 fare)",
+            "203": "More frequent bus services needed",
+            "204": "More capacity on bus services needed (e.g. double deckers)",
+            "205": "Better quality buses needed (e.g. comfortable, more modern, safe etc.)",
+            "206": "Enforcement to ensure bus priority lanes are kept clear (e.g. fines)",
+            "207": "More bus lanes needed / need to go further",
+            "208": "Bus stops out of general traffic (e.g. bus lane / bus layby)",
+            "209": "Suggest better integration with rail services",
+            "210": "Suggest using smaller buses on certain routes",
+            "211": "Suggest more buses to serve rural areas/villages",
+            "212": "Suggest council/local authority should run buses in Cumberland",
+            "213": "Suggest a new bus operator / more competition",
+            "214": "Suggest bus lanes should be well signposted / clear to other road users",
+            "215": "Suggest provision of Park and Ride services / parking near bus stops",
+            "216": "Suggestion related to bus stops / shelters / bus station",
+            "217": "Suggest improvements to road infrastructure / junctions to accommodate buses"
+        }
+    }
+} 

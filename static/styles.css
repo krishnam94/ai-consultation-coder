@@ -1,0 +1,101 @@
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .stApp {
+        padding: 1rem;
+    }
+    .stTextInput, .stTextArea {
+        width: 100% !important;
+    }
+    .stButton>button {
+        width: 100%;
+    }
+    .stProgress {
+        width: 100%;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .stApp {
+        background-color: #0E1117;
+        color: #FAFAFA;
+    }
+    .stTextInput>div>div>input, 
+    .stTextArea>div>div>textarea {
+        background-color: #262730;
+        color: #FAFAFA;
+    }
+    .stMarkdown {
+        color: #FAFAFA;
+    }
+    .stProgress>div>div>div {
+        background-color: #00FF00;
+    }
+}
+
+/* General improvements */
+.stTextInput>div>div>input,
+.stTextArea>div>div>textarea {
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.stButton>button {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+}
+
+.stProgress>div>div>div {
+    border-radius: 4px;
+}
+
+.stExpander {
+    border-radius: 8px;
+    border: 1px solid rgba(49, 51, 63, 0.2);
+}
+
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    color: inherit;
+}
+
+/* Custom classes */
+.app-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.app-title h1 {
+    margin-bottom: 0.5rem;
+}
+
+.app-subtitle {
+    color: #666;
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    margin-bottom: 0.5rem;
+}
+
+.code-reference {
+    margin-bottom: 0.5rem;
+}
+
+.code-reference strong {
+    color: #00FF00;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid rgba(49, 51, 63, 0.2);
+}
+
+.footer p {
+    color: #666;
+} 
